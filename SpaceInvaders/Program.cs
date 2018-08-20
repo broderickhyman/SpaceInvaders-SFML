@@ -23,13 +23,14 @@ namespace SpaceInvaders
             const int height = 800;
 
             RenderWindow window = new RenderWindow(new VideoMode(width, height), "Space Invaders");
+            //window.SetFramerateLimit(30);
             window.Closed += OnClose;
             window.KeyReleased += OnKeyReleased;
 
             Color windowColor = Color.Black;
 
             const int playerWidth = width / 10;
-            const int playerHeight = height / 18;
+            const int playerHeight = height / 20;
             const float playerSpeed = 1;
             var player = new RectangleShape(new Vector2f(playerWidth, playerHeight))
             {
@@ -49,19 +50,23 @@ namespace SpaceInvaders
                 Position = player.Position
             };
 
-            var playerClock = new Clock();
-            var playerElapsed = playerClock.ElapsedTime;
+            var clock = new Clock();
+            var playerElapsed = clock.ElapsedTime;
             var playerPreviousElapsed = playerElapsed;
-
-            var bulletClock = new Clock();
-            var bulletElapsed = playerClock.ElapsedTime;
+            var bulletElapsed = clock.ElapsedTime;
             var bulletPreviousElapsed = playerElapsed;
 
+            var fpsCounter = 0;
+            var fps = 0;
+            //var fps = new Text(fpsCounter.ToString(), );
+            var fpsElapsed = clock.ElapsedTime;
+            var fpsPreviousElapsed = fpsElapsed;
             while (window.IsOpen)
             {
+                fpsCounter++;
                 window.DispatchEvents();
 
-                playerElapsed = playerClock.ElapsedTime;
+                playerElapsed = clock.ElapsedTime;
                 if (playerElapsed.AsMilliseconds() > playerPreviousElapsed.AsMilliseconds())
                 {
                     playerPreviousElapsed = playerElapsed;
@@ -73,16 +78,17 @@ namespace SpaceInvaders
                     {
                         player.Position += new Vector2f(playerSpeed, 0);
                     }
-                    if (player.Position.X < playerWidth / 2)
+                    var playerBounds = player.GetGlobalBounds();
+                    if (playerBounds.Left < 0)
                     {
                         player.Position = new Vector2f(playerWidth / 2, player.Position.Y);
                     }
-                    if (player.Position.X > width - (playerWidth / 2))
+                    if (playerBounds.Left + playerBounds.Width > width)
                     {
                         player.Position = new Vector2f(width - (playerWidth / 2), player.Position.Y);
                     }
                 }
-                bulletElapsed = bulletClock.ElapsedTime;
+                bulletElapsed = clock.ElapsedTime;
                 if (bulletElapsed.AsMilliseconds() > bulletPreviousElapsed.AsMilliseconds())
                 {
                     bulletPreviousElapsed = bulletElapsed;
@@ -98,6 +104,14 @@ namespace SpaceInvaders
                     {
                         bullet.Position = player.Position;
                     }
+                }
+                fpsElapsed = clock.ElapsedTime;
+                if (fpsElapsed > fpsPreviousElapsed + Time.FromSeconds(1))
+                {
+                    fps = fpsCounter;
+                    Console.WriteLine(fps);
+                    fpsCounter = 0;
+                    fpsPreviousElapsed = fpsElapsed;
                 }
 
                 window.Clear(windowColor);
