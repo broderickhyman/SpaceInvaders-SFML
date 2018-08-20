@@ -19,8 +19,8 @@ namespace SpaceInvaders
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            const int width = 1200;
-            const int height = 1200;
+            const int width = 800;
+            const int height = 800;
 
             RenderWindow window = new RenderWindow(new VideoMode(width, height), "Space Invaders");
             window.Closed += OnClose;
@@ -28,15 +28,15 @@ namespace SpaceInvaders
 
             Color windowColor = Color.Black;
 
-            const int playerWidth = 80;
-            const int playerHeight = 40;
+            const int playerWidth = width / 10;
+            const int playerHeight = height / 18;
             const float playerSpeed = 1;
             var player = new RectangleShape(new Vector2f(playerWidth, playerHeight))
             {
                 //Position = new SFML.System.Vector2f(, 50),
                 FillColor = Color.Green,
                 Origin = new Vector2f(playerWidth / 2, playerHeight / 2),
-                Position = new Vector2f(width / 2, height - (playerHeight / 2) - 100)
+                Position = new Vector2f(width / 2, height - (playerHeight / 2) - (height / 10))
             };
 
             const int bulletWidth = 5;
